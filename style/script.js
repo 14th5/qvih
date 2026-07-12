@@ -77,7 +77,6 @@ resetBtn.addEventListener("click", function () {
 function requestFullscreenAndLandscape() {
     const elem = document.documentElement;
 
-    // Yêu cầu toàn màn hình (Fullscreen API)
     const goFullscreen = elem.requestFullscreen
         ? elem.requestFullscreen()
         : elem.webkitRequestFullscreen
@@ -89,9 +88,15 @@ function requestFullscreenAndLandscape() {
     Promise.resolve(goFullscreen)
         .catch(() => {})
         .finally(() => {
-            // Khóa hướng màn hình sang ngang (Screen Orientation API)
             if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock("landscape").catch(() => {});
+                // Trình duyệt hỗ trợ khoá xoay thật (đa số Android)
+                screen.orientation.lock("landscape").catch(() => {
+                    // Nếu khoá thất bại (vd: chưa fullscreen), dùng cách CSS dự phòng
+                    document.body.classList.add("force-landscape");
+                });
+            } else {
+                // Trình duyệt không hỗ trợ Screen Orientation API (vd: iOS Safari)
+                document.body.classList.add("force-landscape");
             }
         });
 }
@@ -102,14 +107,18 @@ if (openBtnFS) {
     openBtnFS.addEventListener("click", requestFullscreenAndLandscape);
 }
 
-// Thoát fullscreen khi bấm "Đóng"
+// Thoát fullscreen & bỏ xoay ngang khi bấm "Đóng"
 const resetBtnFS = document.getElementById("resetBtn");
 if (resetBtnFS) {
     resetBtnFS.addEventListener("click", function () {
+        document.body.classList.remove("force-landscape");
         if (document.fullscreenElement) {
             document.exitFullscreen().catch(() => {});
         } else if (document.webkitFullscreenElement) {
             document.webkitExitFullscreen();
+        }
+        if (screen.orientation && screen.orientation.unlock) {
+            screen.orientation.unlock();
         }
     });
 }

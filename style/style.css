@@ -288,16 +288,15 @@ body {
     color: #d46a84;
     opacity: 0.7;
 }
-/* ==== Fallback xoay ngang bằng CSS cho điện thoại (khi trình duyệt không hỗ trợ Screen Orientation API, vd: iOS Safari) ==== */
-@media screen and (max-width: 900px) and (orientation: portrait) {
-    html {
-        transform: rotate(90deg);
-        transform-origin: left top;
-        width: 100vh;
-        height: 100vw;
-        overflow-x: hidden;
-        position: absolute;
-        top: 100%;
-        left: 0;
-    }
+/* ==== Fallback xoay ngang bằng CSS cho điện thoại (chỉ áp dụng khi JS gắn class "force-landscape" ====
+   sau khi bấm Mở và trình duyệt không hỗ trợ Screen Orientation API, vd: iOS Safari) */
+body.force-landscape {
+    transform: rotate(90deg);
+    transform-origin: left top;
+    width: 100vh;
+    height: 100vw;
+    overflow-x: hidden;
+    position: absolute;
+    top: 0;
+    left: 100%;
 }
