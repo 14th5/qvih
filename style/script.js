@@ -74,7 +74,18 @@ resetBtn.addEventListener("click", function () {
 });
 
 // ==== Tự động Fullscreen & Xoay ngang khi mở trên điện thoại ====
+function isMobileDevice() {
+    const uaCheck = /Android|iPhone|iPad|iPod|Windows Phone|Mobile/i.test(navigator.userAgent);
+    const touchCheck = (navigator.maxTouchPoints || 0) > 0;
+    const sizeCheck = window.matchMedia && window.matchMedia("(max-width: 900px)").matches;
+    // Chỉ coi là di động khi vừa có touch/UA di động, vừa màn hình nhỏ
+    return (uaCheck || touchCheck) && sizeCheck;
+}
+
 function requestFullscreenAndLandscape() {
+    // Trên máy tính: không fullscreen, không xoay ngang — giữ nguyên trải nghiệm bình thường
+    if (!isMobileDevice()) return;
+
     const elem = document.documentElement;
 
     const goFullscreen = elem.requestFullscreen
@@ -111,6 +122,7 @@ if (openBtnFS) {
 const resetBtnFS = document.getElementById("resetBtn");
 if (resetBtnFS) {
     resetBtnFS.addEventListener("click", function () {
+        if (!isMobileDevice()) return;
         document.body.classList.remove("force-landscape");
         if (document.fullscreenElement) {
             document.exitFullscreen().catch(() => {});

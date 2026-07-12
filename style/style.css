@@ -288,15 +288,38 @@ body {
     color: #d46a84;
     opacity: 0.7;
 }
-/* ==== Fallback xoay ngang bằng CSS cho điện thoại (chỉ áp dụng khi JS gắn class "force-landscape" ====
-   sau khi bấm Mở và trình duyệt không hỗ trợ Screen Orientation API, vd: iOS Safari) */
-body.force-landscape {
-    transform: rotate(90deg);
-    transform-origin: left top;
-    width: 100vh;
-    height: 100vw;
+/* ==== Co giãn đồng đều (không méo) cho phong bì trên màn hình hẹp ==== */
+.envlope-wrapper {
+    transform-origin: top center;
+    max-width: 100vw;
+}
+
+@media (max-width: 480px) {
+    .envlope-wrapper { transform: scale(0.9); }
+}
+@media (max-width: 420px) {
+    .envlope-wrapper { transform: scale(0.8); }
+}
+@media (max-width: 360px) {
+    .envlope-wrapper { transform: scale(0.7); }
+}
+
+html, body {
     overflow-x: hidden;
-    position: absolute;
+}
+
+/* ==== Fallback xoay ngang bằng CSS (chỉ áp dụng khi JS gắn class "force-landscape" ====
+   trên ĐIỆN THOẠI, sau khi bấm Mở, khi trình duyệt không hỗ trợ Screen Orientation API,
+   vd: iOS Safari). Chỉ rotate (không scale) nên hình ảnh và bố cục không bị méo. */
+body.force-landscape {
+    position: fixed;
     top: 0;
-    left: 100%;
+    left: 0;
+    width: 100dvh;
+    height: 100dvw;
+    transform: rotate(90deg) translateY(-100%);
+    transform-origin: top left;
+    overflow-y: auto;
+    overflow-x: hidden;
+    justify-content: center;
 }
